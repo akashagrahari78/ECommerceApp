@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const connectDb = require("./config/mongodb");
 const { connectCloudinary } = require("./config/cloudinary");
+const userRouter = require("./routes/userRouter");
+const productRouter = require("./routes/productRoute");
 require("dotenv").config();
 
 const app = express();
@@ -24,7 +26,12 @@ try {
 app.use(express.json());
 app.use(cors());
 
-// Routes
+
+//api endpoints
+app.use("/api/user",userRouter)
+app.use("/api/product", productRouter)
+
+
 app.get("/", (req, res) => {
   res.send("You are in home page");
 });

@@ -5,9 +5,13 @@ const connectDb = () => {
     console.log("Database connected....");
   });
 
-  return mongoose.connect(`${process.env.MONGODB_URI}/commerce`)
+  return mongoose.connect(`${process.env.MONGODB_URI}/commerce`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
     .then(() => {
       console.log("Connected to MongoDB successfully");
+      console.log("using db: ", mongoose.connection.name)
     })
     .catch((error) => {
       console.error("MongoDB connection error:", error);

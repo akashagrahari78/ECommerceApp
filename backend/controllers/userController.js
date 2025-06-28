@@ -4,6 +4,7 @@ const userModel = require("../models/userModel.js")
 const validator = require("validator")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+require('dotenv').config();
 // import bcrypt from "bcrypt";
 // import jwt from "jsonwebtoken";
 
@@ -37,39 +38,32 @@ const loginUser = async (req, res) => {
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    //check if user already exist
+    const emailNormalized = email.trim().toLowerCase();
 
-    const exists = await userModel.findOne({ email });
+    const exists = await userModel.findOne({ email: emailNormalized });
     if (exists) {
       return res.json({ success: false, message: "User already exists" });
     }
 
-    //if email and password is correct
-    if (!validator.isEmail(email)) {
-      return res.json({
-        success: false,
-        message: "Please enter a valid email.",
-      });
+    if (!validator.isEmail(emailNormalized)) {
+      return res.json({ success: false, message: "Please enter a valid email." });
     }
     if (password.length < 8) {
-      return res.json({
-        success: false,
-        message: "Please enter strong password.",
-      });
+      return res.json({ success: false, message: "Please enter a strong password." });
     }
 
-    //hashing user password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+
     const newUser = new userModel({
       name,
-      email,
+      email: emailNormalized,
       password: hashedPassword,
     });
 
     const user = await newUser.save();
-
     const token = createToken(user._id);
+
     res.json({ success: true, token });
   } catch (error) {
     console.log(error);

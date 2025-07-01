@@ -4,7 +4,13 @@ const jwt = require("jsonwebtoken")
 const adminAuth = async(req, res, next)=> { 
     try {
         
-        const {token} = req.headers
+        // const {token} = req.headers
+        // console.log(token);
+        // console.log(req);
+
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+        console.log(token);
         if(!token){
             return res.json({success: false, message: "not authorised"})
         }

@@ -4,6 +4,8 @@ import Sidebar from '../components/Sidebar'
 import { assets } from '../assets/assets'
 import axios   from "axios"
 import backendUrl from "../config";
+import { toast } from 'react-toastify'
+
 
 const Add = () => {
 
@@ -48,10 +50,22 @@ const Add = () => {
       }
     });
     
-    console.log(response.data); 
+    // console.log(response.data); 
+    if(response.data.success){
+      toast.success(response.data.message)
+      setName("")
+      setImage1(false)
+      setImage2(false)
+      setImage3(false)
+      setImage4(false)
+      setPrice("")
+    }else{
+      toast.error(response.data.message)
+    }
 
    } catch (error) {
-    
+      console.log(error);
+      toast.error(error.message)
    }
   }
 

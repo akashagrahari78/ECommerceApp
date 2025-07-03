@@ -3,6 +3,8 @@ import Title from '../components/Title'
 import CartTotal from '../components/CartTotal'
 import { assets } from '../assets/assets'
 import { ShopContext } from '../context/ShopContext'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const PlaceOrder = () => {
 
@@ -51,9 +53,28 @@ const PlaceOrder = () => {
       }
       switch(method){
         //  --------apis call for cod
+
+        case 'cod': 
+        const response = await axios.post(backendUrl +"/api/order/place", orderData, {headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json' 
+        }})
+        console.log(response.data);
+
+        if(response.data.success){
+          setCartItems({})
+          navigate("/orders")
+        }else{
+          toast.error(response.data.message);
+        }
+        break;
+
+        default:
+          break;
       }
     } catch (error) {
-      
+      console.log(error)
+      toast.error(error.message)
     }
   }
 
